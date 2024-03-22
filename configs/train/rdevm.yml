@@ -1,0 +1,58 @@
+model:
+  type: rdevm
+  res_feat_dim: 128
+  pair_feat_dim: 64
+  num_layers: 6
+  flow:
+    num_hidden_layers: 3
+    num_hidden_dims: 256
+    num_mixtures: 8
+
+
+train:
+  loss_weights:
+    mle_1chis: 0.25
+    mle_2chis: 0.25
+    mle_3chis: 0.25
+    mle_4chis: 0.25
+  max_iters: 20000
+  val_freq: 1000
+  batch_size: 32
+  seed: 2022
+  max_grad_norm: 100.0
+  optimizer:
+    type: adam
+    lr: 5.e-5
+    weight_decay: 0.0
+    beta1: 0.9
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.8
+    patience: 10
+    min_lr: 5.e-6
+
+dataset:
+  type: pair
+  data_dir: ./dataset/ppbench2024/
+  split_path: ./data/processed/split.pt
+  processed_dir: ./data/processed/
+  include_pdb_path: ./data/pdb_filtered.pt
+  exclude_pdb_path: ./data/pdb_benchmark.pt
+  transform:
+    - type: mask_peptide
+      mask_type: true
+      mask_pos: true 
+    - type: fix_patch
+      patch_target: receptor
+      anchor_target: peptide
+      anchor_flag: mask_gen_pos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+      patch_size: 128
+      contin_chain: false 
+    - type: merge_chains
+    - type: corrupt_chi_angle
+      ratio_mask: 0.1
+      maskable_flag_attr: peptide_flag
+    - type: center_pos
+      center_flag: receptor_flag
+    
