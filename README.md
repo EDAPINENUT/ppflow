@@ -39,7 +39,7 @@ pip install ./temp/torch_scatter-2.1.1+pt113cu117-cp39-cp39-linux_x86_64.whl
 ```
 
 # Dataset 
-We provide the processed dataset of `PPBench2024` through google drive: [https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq] , together with processed `PPDBench'.
+We provide the processed dataset of `PPBench2024` through google drive: https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq , together with processed `PPDBench'.
 
 Please download `data.zip` and unzip it, leading to the data file directory as 
 ```
@@ -62,7 +62,7 @@ Please download `data.zip` and unzip it, leading to the data file directory as
     pdb_filtered.pt
 ```
 
-If you want the raw datasets for preprocessing, please download them through google drive  [https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq]:  Unzip the file of `datasets_raw.zip`, leading to the directory as 
+If you want the raw datasets for preprocessing, please download them through google drive: https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq.  Unzip the file of `datasets_raw.zip`, leading to the directory as 
 ```
 - dataset
     - PPDbench
