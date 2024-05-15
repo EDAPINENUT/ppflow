@@ -39,10 +39,9 @@ pip install ./temp/torch_scatter-2.1.1+pt113cu117-cp39-cp39-linux_x86_64.whl
 ```
 
 # Dataset 
-We provide the processed dataset of `PPBench2024` through an anonymous google drive: 
-Together with processed `PPDBench' through:
+We provide the processed dataset of `PPBench2024` through google drive: [https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq] , together with processed `PPDBench'.
 
-Please download it and unzip it, leading to the data file directory as 
+Please download `data.zip` and unzip it, leading to the data file directory as 
 ```
 - data
     - processed
@@ -63,7 +62,7 @@ Please download it and unzip it, leading to the data file directory as
     pdb_filtered.pt
 ```
 
-We cannot provide the raw dataset of `PPDbench` since it is hard to find a anonymous drive for the large dataset. For further test and comparison on reference `pdb` file. Unzip the file of `PPDbench.tar.gz`, leading to the directory as 
+If you want the raw datasets for preprocessing, please download them through google drive  [https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq]:  Unzip the file of `datasets_raw.zip`, leading to the directory as 
 ```
 - dataset
     - PPDbench
@@ -151,7 +150,7 @@ Since it is an anonymous github, I have apply a random ID and password for you t
 ```
 where foldx is the software. `./tools/score/foldx_energy.py` gives an example of our python interface for foldx stability.
 
-#### ADCP: We provide the available ADFRsuite software in `./bin`. If it does not compatitable with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
+#### ADCP: We provide the available ADFRsuite software in `./bin`. If it does not compatible with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
 ```
 - bin
     - ADFRsuite_x86_64Linux_1.0
@@ -176,7 +175,7 @@ export PATH={Absolute-path-of-ppfolw}/bin/ADFRsuite_x86_64Linux_1.0/bin:$PATH
 ```
 
 #### PLIP for interaction analysis
-If you want to analyze the interaction type of generated protein-peptide, you can use PLIP: https://github.com/pharmai/plip.
+If you want to analyze the interaction type of the generated protein-peptide, you can use PLIP: https://github.com/pharmai/plip.
 First, clone it to `./bin`
 ```
 cd ./bin
@@ -186,8 +185,23 @@ python setup.py install
 alias plip='python {Absolute-path-of-ppfolw}/bin/plip/plip/plipcmd.py' 
 ```
 
-`./tools/interaction/interaction_analysis.py` gives an example of our python interface for plip interaction analysis.
+`./tools/interaction/interaction_analysis.py` gives an example of our Python interface for PLIP interaction analysis.
 
+
+
+## Citation
+If our paper or the code in the repository is helpful to you, please cite the following:
+```
+@inproceedings{lin2024ppflow,
+	author = {Lin, Haitao and Zhang, Odin and Zhao, Huifeng and Jiang, Dejun and Wu, Lirong and Liu, Zicheng and Huang, Yufei and Li, Stan Z.},
+	title = {PPFlow: Target-Aware Peptide Design with Torsional Flow Matching},
+	year = {2024},
+	booktitle={International Conference on Machine Learning},
+	URL = {https://www.biorxiv.org/content/early/2024/03/08/2024.03.07.583831},
+	eprint = {https://www.biorxiv.org/content/early/2024/03/08/2024.03.07.583831.full.pdf},
+}
+
+```
 
 
 
