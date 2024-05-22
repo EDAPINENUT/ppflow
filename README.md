@@ -26,7 +26,7 @@ conda install conda-forge::py3dmol
 
 ### Packages for training and generating.
 
-#### Install pytorch 1.13.1 with the cuda version that is compatible with your device. The geomstats package does not support torch>=2.0.1 on GPU. Here we recommend use torch==1.13.1.
+#### Install pytorch 1.13.1 with the cuda version that is compatible with your device. The geomstats package does not support torch>=2.0.1 on GPU. Here we recommend using torch==1.13.1.
 ```
 # torch-geomstats
 conda install -c conda-forge geomstats
@@ -95,7 +95,7 @@ python train_diffpp.py
 ```
 
 
-#### After training, you can choose a epoch for generating the peptides through:
+#### After training, you can choose an epoch for generating the peptides through:
 
 ```
 python codesign_diffpp.py 
@@ -116,7 +116,7 @@ python codesign_ppflow.py
 ```
 `./tools/dock/vinadock.py` gives an example of our python interface for vinadock.
 
-#### For HDock, first libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock softward can be download through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
+#### For HDock, firstly, libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock software can be downloaded through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
 ```
 - bin
     - hdock
@@ -127,21 +127,14 @@ python codesign_ppflow.py
 ```
 `./tools/dock/hdock.py`  gives an example of our python interface for hdock.
 
-#### Pyrosetta: For pyrosetta, you should first sign up in https://www.pyrosetta.org/downloads. After the authorizations of liscence, you can install it through
+#### Pyrosetta: For pyrosetta, you should first sign up in https://www.pyrosetta.org/downloads. After the authorization of the license, you can install it through
 ```
  conda config --add channels https://yourauthorizedid:password@conda.rosettacommons.org 
  conda install pyrosetta   
 ```
 
-Since it is an anonymous github, I have apply a random ID and password for you to test, as 
 
-```
- conda config --add channels https://levinthal:paradox@conda.rosettacommons.org 
- conda install pyrosetta   
-```
-`./tools/relax/rosetta_packing.py` gives an example of our python interface for rosetta side-chain packing.
-
-#### FoldX: For FoldX, you should register and log in according to https://foldxsuite.crg.eu/foldx4-academic-licence, and download the packages and copy it to `./bin`. Than, unip it will lead directory look like 
+#### FoldX: For FoldX, you should register and log in according to https://foldxsuite.crg.eu/foldx4-academic-licence, download the packages, and copy it to `./bin`. Then, unzip it will lead to the directory looks like 
 
 ```
 - bin
@@ -150,7 +143,7 @@ Since it is an anonymous github, I have apply a random ID and password for you t
 ```
 where foldx is the software. `./tools/score/foldx_energy.py` gives an example of our python interface for foldx stability.
 
-#### ADCP: We provide the available ADFRsuite software in `./bin`. If it does not compatible with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
+#### ADCP: We provide the available ADFRsuite software in `./bin`. If it is not compatible with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
 ```
 - bin
     - ADFRsuite_x86_64Linux_1.0
