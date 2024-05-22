@@ -1,5 +1,5 @@
-
-# Installation
+# PPFlow: Target-Aware Peptide Design with Torsional Flow Matching
+## Installation
 
 #### Create the conda environment and activate it.
 ```
@@ -81,7 +81,7 @@ If you want the raw datasets for preprocessing, please download them through goo
 
 The raw data of PPBench2024 will be uploaded soon.
 
-# Training and Generating
+## Training and Generating
 Run the following command for PPFlow training:
 
 ```
@@ -103,7 +103,7 @@ python codesign_ppflow.py
 ```
 
 
-# Packages and Scripts for Evaluation
+## Packages and Scripts for Evaluation
 
 ### Packages for docking and other evaluation.
 
