@@ -25,13 +25,17 @@ def main():
     parser.add_argument('-o', '--out_root', type=str, default='./results/ppflow')
     parser.add_argument('-t', '--tag', type=str, default='124')
     parser.add_argument('-s', '--seed', type=int, default=None)
-
     parser.add_argument('-d', '--device', type=str, default='cuda')
     parser.add_argument('-b', '--batch_size', type=int, default=64)
+    parser.add_argument('-ckpt', '--checkpoint', type=str, default=None)
+
     args = parser.parse_args()
 
     # Load configs
     config, config_name = load_config(args)
+    if args.checkpoint is not None:
+        config.model.checkpoint = args.checkpoint
+        
     tag_postfix = '_%s' % args.tag if args.tag else ''
     seed_all(args.seed if args.seed is not None else config.sampling.seed)
 
