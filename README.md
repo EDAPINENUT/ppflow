@@ -115,7 +115,7 @@ python codesign_ppflow.py -ckpt {where-the-trained-ckpt-is}
 Here we give the checkpoints that is pretrained, which is named `ppflow_pretrained.pt` and can be downloaded from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing). You can directly download it an copy it to `./pretrained/ppflow_pretrained.pt`. Further, run the following to generation:
 
 ```
-python codesign_diffpp.py -ckpt {./pretrained/ppflow_pretrained.pt}
+python codesign_diffpp.py -ckpt ./pretrained/ppflow_pretrained.pt
 ```
 
 
