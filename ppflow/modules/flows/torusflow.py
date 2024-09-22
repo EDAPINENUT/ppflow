@@ -272,7 +272,7 @@ class TorusFlow(nn.Module):
                                                                      X_t[:, :, BBHeavyAtom.N],)
 
             vp_t, vr_t, vd_t, vc_t = self.eps_net(
-                    d_t, s_t, X_t, R_t, res_feat, pair_feat, t_tensor, 
+                    d_t, s_t, X_t, R_t, R_t_global, res_feat, pair_feat, t_tensor, 
                     mask_gen_d, mask_gen_aa, mask_gen_pos, mask_res
                 )   # (N, L, 3), (N, L, 3, 3), (N, L, 3)
 
