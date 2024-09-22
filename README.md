@@ -170,7 +170,7 @@ where foldx is the software. `./tools/score/foldx_energy.py` gives an example of
 ```
 - bin
     - ADFRsuite_x86_64Linux_1.0
-        - Toos
+        - Tools
           CCSBpckgs.tar.gz
           ...
       ADFRsuite_Linux-x86_64_1.0_install.run
