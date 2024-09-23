@@ -97,13 +97,13 @@ Run the following command for DiffPP training:
 python train_diffpp.py
 ```
 
-For RDE finetuning, you should firstly download the pretrained `RDE.pt` model from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing), then save it as `./pretrained/RDE.pt`, and finally, run the following command for finetuning:
+For RDE finetuning, you should first download the pretrained `RDE.pt` model from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing), then save it as `./pretrained/RDE.pt`, and finally, run the following command for finetuning:
 
 ```
 python train_rde.py --fine_tune ./pretrained/RDE.pt
 ```
 
-#### After training, you can choose a epoch for generating the peptides through:
+#### After training, you can choose an epoch for generating the peptides through:
 
 ```
 python codesign_diffpp.py -ckpt {where-the-trained-ckpt-is}
@@ -112,13 +112,17 @@ python codesign_ppflow.py -ckpt {where-the-trained-ckpt-is}
 
 ### Generating from pretrained checkpoints
 
-Here we give the checkpoints that is pretrained, which is named `ppflow_pretrained.pt` and can be downloaded from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing). You can directly download it an copy it to `./pretrained/ppflow_pretrained.pt`. Further, run the following to generation:
+Here we give the checkpoints that is pretrained, which is named `ppflow_pretrained.pt` and can be downloaded from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing). You can directly download it and copy it to `./pretrained/ppflow_pretrained.pt`. Further, run the following to generation:
 
 ```
 python codesign_diffpp.py -ckpt ./pretrained/ppflow_pretrained.pt
 ```
 
+If you want to directly evaluate the peptides, we provide the peptides as `codesign_results.tar.gz` from our [google drive](https://drive.google.com/drive/u/0/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq) with evaluation results given
 
+| IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
+|-----------|-------------|------------|-----------|
+| 12.50%    | 1.00        | 0.99       | 0.92      |
 ## Packages and Scripts for Evaluation
 
 ### Packages for docking and other evaluation.
