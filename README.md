@@ -123,6 +123,8 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 | IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
 |-----------|-------------|------------|-----------|
 | 12.50%    | 1.00        | 0.99       | 0.92      |
+
+**You should evaluated files end with `_bb3.pdb` as the generated pdb, since the O element in `_bb4.pdb` are not stable in our reconstruction function.**
 ## Packages and Scripts for Evaluation
 
 ### Packages for docking and other evaluation.
