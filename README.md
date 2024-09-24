@@ -27,7 +27,7 @@ conda install conda-forge::py3dmol
 
 ### Packages for training and generating.
 
-#### Install pytorch 1.13.1 with the cuda version that is compatible with your device. The geomstats package does not support torch>=2.0.1 on GPU util Mar.30, 2024. Here we recommend using torch==1.13.1.
+#### Install pytorch 1.13.1 with the cuda version that is compatible with your device. The geomstats package does not support torch>=2.0.1 on GPU until Mar.30, 2024. Here we recommend using torch==1.13.1.
 ```
 # torch-geomstats
 conda install -c conda-forge geomstats
@@ -107,13 +107,13 @@ python codesign_ppflow.py -ckpt {where-the-trained-ckpt-is}
 
 ### Generating from pretrained checkpoints
 
-Here we give the checkpoints that is pretrained, which is named `ppflow_pretrained.pt` and can be downloaded from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing). You can directly download it and copy it to `./pretrained/ppflow_pretrained.pt`. Further, run the following to generation:
+Here we give the checkpoints that are pretrained, which is named `ppflow_pretrained.pt` and can be downloaded from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing). You can directly download it and copy it to `./pretrained/ppflow_pretrained.pt`. Further, run the following to generation:
 
 ```
 python codesign_diffpp.py -ckpt ./pretrained/ppflow_pretrained.pt
 ```
 
-If you want to directly evaluate the peptides, we provide the peptides as `codesign_results.tar.gz` from our [google drive](https://drive.google.com/drive/u/0/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq) with evaluation results given
+If you want to directly evaluate the peptides, we provide the peptides as `codesign_results.tar.gz` from our [google drive](https://drive.google.com/drive/u/0/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq), which consists of 100 samples / protein structure for more stable evaluation, with results given as
 
 | IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
 |-----------|-------------|------------|-----------|
@@ -131,9 +131,9 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
  pip install git+https://github.com/Valdes-Tresanco-MS/AutoDockTools_py3.git@aee55d50d5bdcfdbcd80220499df8cde2a8f4b2a
  pip install pdb2pqr
 ```
-`./tools/dock/vinadock.py` gives an example of our python interface for vinadock.
+`./tools/dock/vinadock.py` gives an example of our Python interface for vinadock.
 
-#### HDock: For HDock, first libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock software can be download through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
+#### HDock: For HDock, firstly, libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock software can be downloaded through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
 ```
 - bin
     - hdock
@@ -144,7 +144,7 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 ```
 `./tools/dock/hdock.py`  gives an example of our python interface for hdock.
 
-#### Pyrosetta: For pyrosetta, you should first sign up in https://www.pyrosetta.org/downloads. After the authorization of license, you can install it through
+#### Pyrosetta: For pyrosetta, you should first sign up at https://www.pyrosetta.org/downloads. After the authorization of the license, you can install it through
 ```
  conda config --add channels https://yourauthorizedid:password@conda.rosettacommons.org 
  conda install pyrosetta   
@@ -152,16 +152,16 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 
 `./tools/relax/rosetta_packing.py` gives an example of our python interface for rosetta side-chain packing.
 
-#### FoldX: For FoldX, you should register and log in according to https://foldxsuite.crg.eu/foldx4-academic-licence, and download the packages and copy it to `./bin`. Then, unzip it will lead directory to look like 
+#### FoldX: For FoldX, you should register and log in according to https://foldxsuite.crg.eu/foldx4-academic-licence, download the packages, and copy it to `./bin`. Then, unzip it, which will lead the directory to look like 
 
 ```
 - bin
     - FoldX
         foldx
 ```
-where foldx is the software. `./tools/score/foldx_energy.py` gives an example of our python interface for foldx stability.
+where foldx is the software. `./tools/score/foldx_energy.py` gives an example of our Python interface for foldx stability.
 
-#### ADCP: We provide the available ADFRsuite software in `./bin`. If it does not compatible with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
+#### ADCP: We provide the available ADFRsuite software in `./bin`. If it is not compatible with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
 ```
 - bin
     - ADFRsuite_x86_64Linux_1.0
