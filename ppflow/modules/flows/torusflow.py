@@ -266,7 +266,7 @@ class TorusFlow(nn.Module):
             t_tensor = torch.full([N, ], fill_value=(t+1)/num_steps, dtype=torch.float32, device=self._dummy.device)
 
             X_t = manifold_to_euclid(r_t, p_t, d_t, X_ctx, mask_gen_pos)
-        
+            _, R_t_global = global_frame(X_t, mask_gen_pos)
             X_t, R_t = X_t[:, :, BBHeavyAtom.CA], construct_3d_basis(X_t[:, :, BBHeavyAtom.CA],
                                                                      X_t[:, :, BBHeavyAtom.C],
                                                                      X_t[:, :, BBHeavyAtom.N],)
