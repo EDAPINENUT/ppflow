@@ -150,12 +150,6 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
  conda install pyrosetta   
 ```
 
-Since it is an anonymous github, I have applied a random ID and password for you to test, as 
-
-```
- conda config --add channels https://levinthal:paradox@conda.rosettacommons.org 
- conda install pyrosetta   
-```
 `./tools/relax/rosetta_packing.py` gives an example of our python interface for rosetta side-chain packing.
 
 #### FoldX: For FoldX, you should register and log in according to https://foldxsuite.crg.eu/foldx4-academic-licence, and download the packages and copy it to `./bin`. Then, unzip it will lead directory to look like 
