@@ -40,10 +40,9 @@ pip install ./temp/torch_scatter-2.1.1+pt113cu117-cp39-cp39-linux_x86_64.whl
 ```
 
 ## Dataset 
-We provide the processed dataset of `PPBench2024` through an anonymous google drive: 
-Together with processed `PPDBench' through:
+We provide the processed dataset of `PPBench2024` through [google drive](https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq), together with processed `PPDBench'.
 
-Please download it and unzip it, leading to the data file directory as 
+Please download `data.zip` and unzip it, leading to the data file directory as 
 ```
 - data
     - processed
@@ -63,8 +62,7 @@ Please download it and unzip it, leading to the data file directory as
     pdb_benchmark.pt
     pdb_filtered.pt
 ```
-
-We cannot provide the raw dataset of `PPDbench` since it is hard to find a anonymous drive for the large dataset. For further test and comparison on reference `pdb` file. Unzip the file of `PPDbench.tar.gz`, leading to the directory as 
+If you want the raw datasets for preprocessing, please download them through [google drive](https://drive.google.com/drive/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq).  Unzip the file of `datasets_raw.zip`, leading to the directory as 
 ```
 - dataset
     - PPDbench
@@ -80,9 +78,6 @@ We cannot provide the raw dataset of `PPDbench` since it is hard to find a anony
             peptide.pdb
             recepotor.pdb
 ```
-
-The raw data of PPBench2024 will be uploaded soon.
-
 ## Training and Generating
 ### Training from scratch
 Run the following command for PPFlow training:
@@ -124,7 +119,7 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 |-----------|-------------|------------|-----------|
 | 12.50%    | 1.00        | 0.99       | 0.92      |
 
-**You should evaluated files end with `_bb3.pdb` as the generated pdb, since the O element in `_bb4.pdb` are not stable in our reconstruction function.**
+**You should evaluate files that end with `_bb3.pdb` as the generated pdb, since the O element in `_bb4.pdb` is unstable in our reconstruction function.**
 ## Packages and Scripts for Evaluation
 
 ### Packages for docking and other evaluation.
@@ -138,7 +133,7 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 ```
 `./tools/dock/vinadock.py` gives an example of our python interface for vinadock.
 
-#### For HDock, first libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock softward can be download through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
+#### For HDock, first libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock software can be download through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
 ```
 - bin
     - hdock
@@ -149,13 +144,13 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 ```
 `./tools/dock/hdock.py`  gives an example of our python interface for hdock.
 
-#### Pyrosetta: For pyrosetta, you should first sign up in https://www.pyrosetta.org/downloads. After the authorizations of liscence, you can install it through
+#### Pyrosetta: For pyrosetta, you should first sign up in https://www.pyrosetta.org/downloads. After the authorization of license, you can install it through
 ```
  conda config --add channels https://yourauthorizedid:password@conda.rosettacommons.org 
  conda install pyrosetta   
 ```
 
-Since it is an anonymous github, I have apply a random ID and password for you to test, as 
+Since it is an anonymous github, I have applied a random ID and password for you to test, as 
 
 ```
  conda config --add channels https://levinthal:paradox@conda.rosettacommons.org 
@@ -163,7 +158,7 @@ Since it is an anonymous github, I have apply a random ID and password for you t
 ```
 `./tools/relax/rosetta_packing.py` gives an example of our python interface for rosetta side-chain packing.
 
-#### FoldX: For FoldX, you should register and log in according to https://foldxsuite.crg.eu/foldx4-academic-licence, and download the packages and copy it to `./bin`. Than, unip it will lead directory look like 
+#### FoldX: For FoldX, you should register and log in according to https://foldxsuite.crg.eu/foldx4-academic-licence, and download the packages and copy it to `./bin`. Then, unzip it will lead directory to look like 
 
 ```
 - bin
@@ -172,7 +167,7 @@ Since it is an anonymous github, I have apply a random ID and password for you t
 ```
 where foldx is the software. `./tools/score/foldx_energy.py` gives an example of our python interface for foldx stability.
 
-#### ADCP: We provide the available ADFRsuite software in `./bin`. If it does not compatitable with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
+#### ADCP: We provide the available ADFRsuite software in `./bin`. If it does not compatible with your system, please install it through https://ccsb.scripps.edu/adcp/downloads/. Copy the `ADFRsuite_x86_64Linux_1.0.tar` into `./bin`. Finally, the installed ADCP into `./bin` should look like
 ```
 - bin
     - ADFRsuite_x86_64Linux_1.0
@@ -186,7 +181,7 @@ Remember to add it to your env-path as
 ```
 export PATH={Absolute-path-of-ppfolw}/bin/ADFRsuite_x86_64Linux_1.0/bin:$PATH
 ```
-`./tools/dock/adcpdock.py` gives an example of our python interface for ADCPDocking.
+`./tools/dock/adcpdock.py` gives an example of our Python interface for ADCPDocking.
 
 #### TMscore: The available TMscore evaluation software is provided in `./bin`, as 
 ```
@@ -197,7 +192,7 @@ export PATH={Absolute-path-of-ppfolw}/bin/ADFRsuite_x86_64Linux_1.0/bin:$PATH
 ```
 
 #### PLIP for interaction analysis
-If you want to analyze the interaction type of generated protein-peptide, you can use PLIP: https://github.com/pharmai/plip.
+If you want to analyze the interaction type of the generated protein-peptide, you can use PLIP: https://github.com/pharmai/plip.
 First, clone it to `./bin`
 ```
 cd ./bin
@@ -207,10 +202,10 @@ python setup.py install
 alias plip='python {Absolute-path-of-ppfolw}/bin/plip/plip/plipcmd.py' 
 ```
 
-`./tools/interaction/interaction_analysis.py` gives an example of our python interface for plip interaction analysis.
+`./tools/interaction/interaction_analysis.py` gives an example of our Python interface for plip interaction analysis.
 
 ### Evaluation scripts
-The evaluation scripts are given in `./evaluation` directory, you can run the following for the evalution in the main experiments:
+The evaluation scripts are given in `./evaluation` directory, you can run the following for the evaluation in the main experiments:
 
 ```
 # Evaluting the docking energy
