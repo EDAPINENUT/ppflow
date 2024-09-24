@@ -27,7 +27,7 @@ conda install conda-forge::py3dmol
 
 ### Packages for training and generating.
 
-#### Install pytorch 1.13.1 with the cuda version that is compatible with your device. The geomstats package does not support torch>=2.0.1 on GPU. Here we recommend use torch==1.13.1.
+#### Install pytorch 1.13.1 with the cuda version that is compatible with your device. The geomstats package does not support torch>=2.0.1 on GPU util Mar.30, 2024. Here we recommend using torch==1.13.1.
 ```
 # torch-geomstats
 conda install -c conda-forge geomstats
