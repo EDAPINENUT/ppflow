@@ -124,7 +124,7 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 
 ### Packages for docking and other evaluation.
 
-#### For Vina Docking, install the packages through:
+#### Vina: For Vina Docking, install the packages through:
 ```
  conda install conda-forge::vina
  pip install meeko
@@ -133,7 +133,7 @@ If you want to directly evaluate the peptides, we provide the peptides as `codes
 ```
 `./tools/dock/vinadock.py` gives an example of our python interface for vinadock.
 
-#### For HDock, first libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock software can be download through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
+#### HDock: For HDock, first libfftw3 is needed for hdock with `apt-get install -y libfftw3-3`. Besides, the HDock software can be download through: http://huanglab.phys.hust.edu.cn/software/hdocklite/. After downloading it, install or unzip it to the `./bin` directory, leading to the file structure as 
 ```
 - bin
     - hdock
@@ -185,8 +185,7 @@ export PATH={Absolute-path-of-ppfolw}/bin/ADFRsuite_x86_64Linux_1.0/bin:$PATH
         TMscore.cpp
 ```
 
-#### PLIP for interaction analysis
-If you want to analyze the interaction type of the generated protein-peptide, you can use PLIP: https://github.com/pharmai/plip.
+#### PLIP: If you want to analyze the interaction type of the generated protein-peptide, you can use PLIP: https://github.com/pharmai/plip.
 First, clone it to `./bin`
 ```
 cd ./bin
