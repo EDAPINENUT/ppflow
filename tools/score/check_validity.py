@@ -17,9 +17,9 @@ def _check_validity(bond_dict):
     nca = torch.tensor(bond_dict['nca'])
     cac = torch.tensor(bond_dict['cac'])
     cn = torch.tensor(bond_dict['cn'])
-    nca_wrong = torch.logical_and(nca > N_CA_LENGTH + 0.5, nca < N_CA_LENGTH - 0.5).sum()
-    cac_wrong = torch.logical_and(cac > CA_C_LENGTH + 0.5, cac < CA_C_LENGTH - 0.5).sum()
-    cn_wrong = torch.logical_and(cn > C_N_LENGTH + 0.5, cn < C_N_LENGTH - 0.5).sum()
+    nca_wrong = torch.logical_or(nca > N_CA_LENGTH + 0.5, nca < N_CA_LENGTH - 0.5).sum()
+    cac_wrong = torch.logical_or(cac > CA_C_LENGTH + 0.5, cac < CA_C_LENGTH - 0.5).sum()
+    cn_wrong = torch.logical_or(cn > C_N_LENGTH + 0.5, cn < C_N_LENGTH - 0.5).sum()
     if nca_wrong + cac_wrong + cn_wrong > 0:
         return False
     else:
