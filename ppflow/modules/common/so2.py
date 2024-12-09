@@ -13,3 +13,13 @@ def geodesic_so2(x0, x1):
     geodesics = (x1 - x0 + torch.pi) % (2*torch.pi) - torch.pi
     x_terminal = x0 + geodesics
     return geodesics, x_terminal
+
+def logmap(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+    z = (y - x)
+    return torch.atan2(torch.sin(z), torch.cos(z))
+
+
+if __name__ == '__main__':
+    x = torch.tensor([2.0, -0.5, 0.5]) * 2 * torch.pi
+    y = torch.tensor([1.0, 0.3, -0.3]) * 2 * torch.pi
+    print(logmap(x, y))

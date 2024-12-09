@@ -35,7 +35,7 @@ def global_frame(pos_heavyatom, pos_mask):
     p_global = pos_center
     return p_global, R_global
 
-def manifold_to_euclid(R, p, d, X_1, mask_gen_pos, bb4=False):
+def manifold_to_euclid(R, p, d, X_1, mask_gen_pos, bb4=False, dr=True):
     X_1_bb4 = X_1.clone()
     X_1 = X_1[:,:,:3,:]
 
@@ -50,8 +50,8 @@ def manifold_to_euclid(R, p, d, X_1, mask_gen_pos, bb4=False):
         pos_heavyatom_bb4 = F.pad(pos_heavyatom_bb4, padding, value=0.)
     else:
         pos_heavyatom = nerf_build_batch(d[...,0],
-                                    d[...,1],
-                                    d[...,2])
+                                         d[...,1],
+                                         d[...,2])
         
     B, L, N = pos_heavyatom.shape[:3]
     pos_mask = mask_gen_pos[:,:,None,None].expand_as(pos_heavyatom)
@@ -62,21 +62,23 @@ def manifold_to_euclid(R, p, d, X_1, mask_gen_pos, bb4=False):
     
     pos_center = (pos_heavyatom * pos_mask).sum(1) / pos_mask.sum(1)
     pos_heavyatom = pos_heavyatom - pos_center.unsqueeze(1) 
-
-    index_ = pos_mask[:,:,0].nonzero()
-    batch_idx = index_[:,0]
-    mask_idx = index_[:,1]
-    out_from = torch.zeros(B).to(index_)
-    idx_from = scatter_min(mask_idx, batch_idx, dim=0, out=out_from)[0]
-    out_to = torch.zeros(B).to(index_)
-    idx_to = scatter_max(mask_idx, batch_idx, dim=0, out=out_to)[0]
-    pos_start = pos_heavyatom[range(B), idx_from]
-    pos_end = pos_heavyatom[range(B), idx_to]
-
-    R_p = construct_3d_basis(torch.zeros_like(pos_start), pos_start, pos_end)
+    
     rotate = lambda x, R: torch.einsum('bld,bmd -> blm', x, R)
-    pos_heavyatom = rotate(pos_heavyatom, R_p.transpose(-1,-2))
+    if not dr:
+        index_ = pos_mask[:,:,0].nonzero()
+        batch_idx = index_[:,0]
+        mask_idx = index_[:,1]
+        out_from = torch.zeros(B).to(index_)
+        idx_from = scatter_min(mask_idx, batch_idx, dim=0, out=out_from)[0]
+        out_to = torch.zeros(B).to(index_)
+        idx_to = scatter_max(mask_idx, batch_idx, dim=0, out=out_to)[0]
+        pos_start = pos_heavyatom[range(B), idx_from]
+        pos_end = pos_heavyatom[range(B), idx_to]
+        R_p = construct_3d_basis(torch.zeros_like(pos_start), pos_start, pos_end)
+        pos_heavyatom = rotate(pos_heavyatom, R_p.transpose(-1,-2))
+
     pos_heavyatom = rotate(pos_heavyatom, R)
+    
     pos_heavyatom = pos_heavyatom + p.unsqueeze(1)
     pos_mask = pos_mask.reshape(B, L, N, -1)
     pos_heavyatom = pos_heavyatom.reshape(B, L, N, -1)

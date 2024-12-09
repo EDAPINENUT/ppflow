@@ -1,3 +1,4 @@
+from sklearn.metrics import log_loss
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -14,18 +15,24 @@ from ppflow.datasets.constants import max_num_heavyatoms, BBHeavyAtom
 from scipy.spatial.transform import Rotation
 # from ..common.nerf import nerf_build_batch_bb4
 
-def loss_rot_func(v, u, x):
-    res = v - u
-    norm_loss = norm_SO3(x, res) # norm-squared on SO(3)
-    # loss = torch.mean(norm, dim=-1)
-    return norm_loss
+def loss_rot_func(v, u):
+    size = list(v.shape[:-2])
+    ncol = v.numel() // 3
+
+    RT_pred = v.transpose(-2, -1).reshape(ncol, 3) # (ncol, 3)
+    RT_true = u.transpose(-2, -1).reshape(ncol, 3) # (ncol, 3)
+
+    ones = torch.ones([ncol, ], dtype=torch.long, device=v.device)
+    loss = F.cosine_embedding_loss(RT_pred, RT_true, ones, reduction='none')  # (ncol*3, )
+    loss = loss.reshape(size + [3]).sum(dim=-1)  
+    return loss
 
 def loss_seq_func(p_true, p_est):
     return F.cross_entropy(
-            input=torch.log(p_est + 1e-8).transpose(-1,1), 
-            target=p_true.argmax(-1), 
-            reduction='none'
-            )
+        input=torch.log(p_est + 1e-8).transpose(-1,1), 
+        target=p_true.argmax(-1), 
+        reduction='none'
+    )
 
 
 class VectorFieldNet(nn.Module):
@@ -63,7 +70,7 @@ class VectorFieldNet(nn.Module):
             nn.Linear(res_feat_dim, 3)
         )
 
-    def forward(self, d_t, s_t, X_t, R_t, R_t_global, res_feat, pair_feat, t, 
+    def forward(self, d_t, s_t, X_t, R_t, res_feat, pair_feat, t, 
                 mask_gen_d, mask_gen_aa, mask_gen_pos, mask_res):
         """
         Args:
@@ -103,7 +110,6 @@ class VectorFieldNet(nn.Module):
         eps_rot = torch.where(mask_gen_rot, eps_rot, torch.zeros_like(eps_rot))
         eps_rot = (eps_rot * mask_gen[:, :, None]).sum(1) / mask_gen[:, :, None].sum(1)
         vr_t = quaternion_1ijk_to_rotation_matrix(eps_rot) # (N, L, 3, 3)
-        vr_t = tangent_space_proj(R_t_global, vr_t)
         
         eps_dihed = self.eps_dihed_net(in_feat)
         vd_t = torch.where(mask_gen_d, eps_dihed, torch.zeros_like(eps_dihed))
@@ -159,23 +165,23 @@ class TorusFlow(nn.Module):
             t = torch.rand((N,)).type_as(p_1).to(p_1.device)
 
         if denoise_structure:
-            ur_t, r_t = self.rot_sampler.sample_field(R_1, t)
+            ur_t, dr_t = self.rot_sampler.sample_field(R_1, t)
             up_t, p_t = self.tra_sampler.sample_field(p_1, t)
             ud_t, d_t = self.local_tor_sampler.sample_field(d_1, t, mask_gen_d)
             
         else:
-            r_t = R_1.clone()
+            dr_t = torch.eye(3).to(R_1.device).repeat(N, 1, 1)
             p_t = p_1.clone()
             d_t = d_1.clone()
-            ur_t = torch.zeros_like(r_t)
+            ur_t = torch.eye(3).to(R_1.device).repeat(N, 1, 1)
             up_t = torch.zeros_like(p_t)
             ud_t = torch.zeros_like(d_t)
         
         # nerf_build_batch_bb4(d_1[...,0], d_1[...,1], d_1[...,2])
 
-        X_t = manifold_to_euclid(r_t, p_t, d_t, X_1, mask_gen_pos)
+        X_t = manifold_to_euclid(dr_t, p_t, d_t, X_1, mask_gen_pos, dr=True)
         
-        _, R_t_global = global_frame(X_t, mask_gen_pos)
+        # _, R_t_global = global_frame(X_t, mask_gen_pos)
         
         X_t, R_t = X_t[:, :, BBHeavyAtom.CA], construct_3d_basis(X_t[:, :, BBHeavyAtom.CA],
                                                                  X_t[:, :, BBHeavyAtom.C],
@@ -190,14 +196,14 @@ class TorusFlow(nn.Module):
             uc_t = torch.zeros_like(s_t.unsqueeze(-1)).float().repeat(1, 1, self.num_class)
 
         vp_t, vr_t, vd_t, vc_t = self.eps_net(
-            d_t, s_t, X_t, R_t, R_t_global, res_feat, pair_feat, t, 
+            d_t, s_t, X_t, R_t, res_feat, pair_feat, t, 
             mask_gen_d, mask_gen_aa, mask_gen_pos, mask_res
         )   # (N, L, 3), (N, L, 3, 3), (N, L, 3), (N, L, self.num_class), (N, L)
 
         loss_dict = {}
 
         # Rotation loss
-        loss_rot = loss_rot_func(vr_t, ur_t, r_t).mean(dim=-1) # (N, L)
+        loss_rot = loss_rot_func(vr_t, ur_t).mean(dim=-1) # (N, )
         # loss_rot = (loss_rot * mask_gen_pos).sum() / (mask_gen_pos.sum().float() + 1e-8)
         loss_dict['rot'] = loss_rot
 

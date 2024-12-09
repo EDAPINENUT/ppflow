@@ -3,18 +3,19 @@ os.environ["GEOMSTATS_BACKEND"] = "pytorch"
 os.environ["GEOMSTATS_DEVICE"] = "cuda"
 import torch 
 from scipy.spatial.transform import Rotation
-from geomstats.geometry.special_orthogonal import SpecialOrthogonal
+# from geomstats.geometry.special_orthogonal import SpecialOrthogonal
 from einops import rearrange
 from functorch import vmap
 from ..common.so3 import * 
 from ..common.so2 import *
 from ..common.layers import clampped_one_hot
+from torch.func import jvp
 
-from geomstats._backend import _backend_config as _config
+# from geomstats._backend import _backend_config as _config
 ### IMPORTANT!
 # torch.set_default_tensor_type("torch.cuda.FloatTensor")
 torch.set_default_dtype(torch.float32)
-_config.DEFAULT_DTYPE = torch.cuda.FloatTensor 
+#_config.DEFAULT_DTYPE = torch.cuda.FloatTensor 
 
 def riemannian_gradient(f, R):
     coefficients = torch.zeros(list(R.shape[:-2])+[3], requires_grad=True).to(R.device)
@@ -23,27 +24,26 @@ def riemannian_gradient(f, R):
     return R @ hat(grad_coefficients)
 
 class SO3FlowSampler(nn.Module):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, sigma=1.65) -> None:
         super().__init__()
-        self.manifold = SpecialOrthogonal(n=3, point_type="matrix")
-        self.basic_sampler = SO3ConditionalFlowMatcher(manifold=self.manifold)
+        '''
+        using conditional VFS in Example I of Sec 4.1 in https://arxiv.org/pdf/2210.02747
+        '''
+        self.sigma = sigma
     
     def sample_field(self, x1, t, mask=None):
-        '''
-        x1: [B, ..., 3, 3] rotation matrix
-        t: [B,] time
-        '''
-        x0 = torch.tensor(Rotation.random(x1.size(0)).as_matrix()).to(x1)
         
+        B = x1.shape[0]
+        sigma_t = self.sigma ** (1 - t) * 0.1 ** t
+        sigma_t = sigma_t.unsqueeze(-1)
+        dx_vec = torch.zeros((B, 3)).to(x1)
         if mask is not None:
-            mask = mask.reshape(-1, *([1] * (x0.dim() - 1)))
-            x0 = torch.where(mask, x0, x1)
-        
-        t, ut, xt = self.basic_sampler.sample_location_and_conditional_flow(x0, x1, time_der=True, t=t)
-        if mask is not None:
-            xt = torch.where(mask, xt, x1)
-            ut = torch.where(mask, ut, torch.zeros_like(ut))
-        return ut, xt
+            dx_vec = torch.where(mask, dx_vec, torch.zeros((B, 3)).to(x1)) * sigma_t
+        else:
+            dx_vec = torch.randn((B, 3)).to(x1) * sigma_t
+        rot_mat = so3vec_to_rotation(dx_vec)
+ 
+        return rot_mat.transpose(-1, -2), rot_mat
     
     def inference(self, xt, vx_t, dt, mask=None):
         dt = dt.reshape(-1, *([1] * (xt.dim() - 1)))
@@ -55,7 +55,10 @@ class SO3FlowSampler(nn.Module):
         return x_new
 
 class R3FlowSampler(nn.Module):
-    def __init__(self, sigma=0.01) -> None:
+    '''
+    using conditional VFS in Example I of Sec 4.1 in https://arxiv.org/pdf/2210.02747
+    '''
+    def __init__(self, sigma=20.0) -> None:
         super().__init__()
         self.sigma = sigma 
 
@@ -71,24 +74,23 @@ class R3FlowSampler(nn.Module):
         x1: [B, ..., 3] translation vector
         t: [B,] time
         '''
-        x0 = torch.randn_like(x1).to(x1)
+        mu = x1
+        sigma_t = self.sigma ** (1 - t) * 0.1 ** t
+        sigma_t = sigma_t.unsqueeze(-1)
+        xt = torch.randn_like(mu).to(mu) * sigma_t + mu
+        ut = - (xt - mu) / sigma_t ** 2
         
-        if mask is not None:
-            mask = mask.reshape(-1, *([1] * (x0.dim() - 1)))
-            x0 = torch.where(mask, x0, x1)
-        
-        t, ut, xt = self.sample_location_and_conditional_flow(x0, x1, t=t)
         if mask is not None:
             xt = torch.where(mask, xt, x1)
             ut = torch.where(mask, ut, torch.zeros_like(ut))
 
         return ut, xt
     
-    def sample_location_and_conditional_flow(self, x0, x1, t=None):
+    def sample_location_and_conditional_flow(self, x0, sigma_t, t=None):
         if t is None:
             t = torch.rand(x0.shape[0]).type_as(x0).to(x0.device)
 
-        xt = self.sample_conditional_xt(x0, x1, t, sigma=self.sigma)
+        xt = self.sample_conditional_xt(x0, sigma_t, t, sigma=self.sigma)
         ut = self.compute_conditional_vector_field(x0, x1)
         return t, ut, xt
 
@@ -142,7 +144,7 @@ class R3FlowSampler(nn.Module):
 class TorusFlowSampler(nn.Module):
     def __init__(self, sigma=0.0) -> None:
         super().__init__()
-        self.sigma = sigma 
+        self.sigma = sigma
 
     def inference(self, xt, vx_t, dt, mask=None):
         dt = dt.reshape(-1, *([1] * (xt.dim() - 1)))
@@ -171,14 +173,48 @@ class TorusFlowSampler(nn.Module):
 
         return ut, xt
     
-    def sample_location_and_conditional_flow(self, x0, x1, t=None):
-        if t is None:
-            t = torch.rand(x0.shape[0]).type_as(x0).to(x0.device)
-
-        xt = self.sample_conditional_xt(x0, x1, t, sigma=self.sigma)
-        ut = self.compute_conditional_vector_field(x0, x1)
+    def _sample_location_and_conditional_flow(self, x0, x1, t):
+        path = self.geodesic(x0, x1)
+        xt, ut = jvp(path, (t,), (torch.ones_like(t).to(t),))
         return t, ut, xt
+    
+    def sample_location_and_conditional_flow(self, x0, x1, t=None):
+        B, N, D = x0.shape
+        x0 = x0.view(B*N, D)
+        x1 = x1.view(B*N, D)
+        if t is None:
+            t = torch.rand(B*N).type_as(x0).to(x0.device).unsqueeze(-1)
+        else:
+            t = t[:, None, None].repeat(1, N, 1).view(B*N, 1)
 
+        t, ut, xt = self._sample_location_and_conditional_flow(x0, x1, t)
+        t = t.view(B, N)
+        ut = ut.view(B, N, D)
+        xt = xt.view(B, N, D)
+        return t, ut, xt
+    
+    def logmap(self, x0, x1):
+        z = (x1 - x0)
+        return torch.atan2(torch.sin(z), torch.cos(z))
+    
+    def geodesic(self, start_point, end_point):
+        shooting_tangent_vec = self.logmap(start_point, end_point)
+
+        def path(t):
+            """Generate parameterized function for geodesic curve.
+            Parameters
+            ----------
+            t : array-like, shape=[n_points,]
+                Times at which to compute points of the geodesics.
+            """
+            tangent_vecs = torch.einsum("bi,bk->bik", t, shooting_tangent_vec)
+            points_at_time_t = self.expmap(start_point.unsqueeze(-2), tangent_vecs)
+            return points_at_time_t
+
+        return path
+    
+    def expmap(self, x0, tangent_vecs):
+        return (x0 + tangent_vecs) % (2 * math.pi)
 
     def sample_conditional_xt(self, x0, x1, t, sigma):
         """
@@ -201,12 +237,15 @@ class TorusFlowSampler(nn.Module):
         [1] Improving and Generalizing Flow-Based Generative Models with minibatch optimal transport, Preprint, Tong et al.
         """
         t = t.reshape(-1, *([1] * (x0.dim() - 1)))
-        geodesics, x1 = geodesic_so2(x0, x1)
+        x0 = regularize(x0)
+        x1 = regularize(x1)
+        geodesics = logmap(x0, x1)
+        x1 = x0 + geodesics
         mu_t = t * x1 + (1 - t) * x0
         epsilon = torch.randn_like(x0)
-        return mu_t + sigma * epsilon
+        return regularize(mu_t + sigma * epsilon)
     
-    def compute_conditional_vector_field(self, x0, x1):
+    def compute_conditional_vector_field(self, xt, x1, t):
         """
         Compute the conditional vector field ut(x1|x0) = x1 - x0, see Eq.(15) [1].
 
@@ -225,7 +264,8 @@ class TorusFlowSampler(nn.Module):
         ----------
         [1] Improving and Generalizing Flow-Based Generative Models with minibatch optimal transport, Preprint, Tong et al.
         """
-        return x1 - x0
+        t = t.reshape(-1, *([1] * (xt.dim() - 1)))
+        return logmap(xt, x1) / (1 - t)
 
     
 class TypeFlowSampler(nn.Module):
