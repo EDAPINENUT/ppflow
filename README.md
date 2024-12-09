@@ -107,19 +107,19 @@ python codesign_ppflow.py -ckpt {where-the-trained-ckpt-is}
 
 ### Generating from pretrained checkpoints
 > [!NOTE]
-> Due to an error in the validation script where a symbol was incorrectly written, all methods were inadvertently evaluated using fragment segments during validation (See [Issue](https://github.com/EDAPINENUT/ppflow/issues/4#issuecomment-2371661508)). This led to an overestimation of performance in FoldX. We sincerely apologize for the inaccuracies reported in the paper, and the corrected version of [the paper](https://arxiv.org/abs/2405.06642) has addressed this issue.
-> We optimized the orientation and translation Flow matching using the method described in Sec. 4.1: Diffusion Conditional Vector Fields from [FlowMatching](https://arxiv.org/pdf/2210.02747).
+> - Due to an error in the validation script where a symbol was incorrectly written, all methods were inadvertently evaluated using fragment segments during validation (See [Issue](https://github.com/EDAPINENUT/ppflow/issues/4#issuecomment-2371661508)). This led to an overestimation of performance in FoldX. We sincerely apologize for the inaccuracies reported in the paper, and the corrected version of [the paper](https://arxiv.org/abs/2405.06642) has addressed this issue.
+> - We optimized the orientation and translation Flow matching using the method described in Sec. 4.1: Diffusion Conditional Vector Fields from [FlowMatching](https://arxiv.org/pdf/2210.02747).
 > The model will be available through our lab's platform. 
 
-If you want to directly evaluate the peptides, we provide the peptides as `codesign_results.tar.gz` from our [google drive](https://drive.google.com/drive/u/0/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq), which consists of 100 samples / protein structure for more stable evaluation, with results given as
+If you want to directly evaluate the peptides, we provide the peptides as `codesign_results.tar.gz` from our [google drive](https://drive.google.com/drive/u/0/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq), which consists of 20 samples per protein structure for more stable evaluation, with results given as
 
 ｜Method| IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
 |----|-----------|-------------|------------|-----------|
 |PPFlow| 4.04%    | 1.00        | 0.99       | 0.67      |
-|DiffPP| 4.04%    | 1.00        | 0.99       | 0.67      |
+|DiffPP| 3.72%    | 0.41        | 0.89       | 0.28      |
 
+Although there was a slight decline in the metrics on foldX, the overall performance still comprehensively surpasses DiffPP.
 
-**You should evaluate files that end with `_bb3.pdb` as the generated pdb, since the O element in `_bb4.pdb` is unstable in our reconstruction function.**
 ## Packages and Scripts for Evaluation
 
 ### Packages for docking and other evaluation.
