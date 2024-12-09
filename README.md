@@ -106,18 +106,18 @@ python codesign_ppflow.py -ckpt {where-the-trained-ckpt-is}
 ```
 
 ### Generating from pretrained checkpoints
-
-Here we give the checkpoints that are pretrained, which is named `ppflow_pretrained.pt` and can be downloaded from the [google drive](https://drive.google.com/drive/folders/18bCjncFKDK3eeYf6fyiFfdNgyK40K88g?usp=sharing). You can directly download it and copy it to `./pretrained/ppflow_pretrained.pt`. Further, run the following to generation:
-
-```
-python codesign_diffpp.py -ckpt ./pretrained/ppflow_pretrained.pt
-```
+> [!NOTE]
+> Due to an error in the validation script where a symbol was incorrectly written, all methods were inadvertently evaluated using fragment segments during validation (See [Issue](https://github.com/EDAPINENUT/ppflow/issues/4#issuecomment-2371661508)). This led to an overestimation of performance in FoldX. We sincerely apologize for the inaccuracies reported in the paper, and the corrected version of [the paper](https://arxiv.org/abs/2405.06642) has addressed this issue.
+> We optimized the orientation and translation Flow matching using the method described in Sec. 4.1: Diffusion Conditional Vector Fields from [FlowMatching](https://arxiv.org/pdf/2210.02747).
+> The model will be available through our lab's platform. 
 
 If you want to directly evaluate the peptides, we provide the peptides as `codesign_results.tar.gz` from our [google drive](https://drive.google.com/drive/u/0/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq), which consists of 100 samples / protein structure for more stable evaluation, with results given as
 
-| IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
-|-----------|-------------|------------|-----------|
-| 12.50%    | 1.00        | 0.99       | 0.92      |
+｜Method| IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
+|----|-----------|-------------|------------|-----------|
+|PPFlow| 4.04%    | 1.00        | 0.99       | 0.67      |
+|DiffPP| 4.04%    | 1.00        | 0.99       | 0.67      |
+
 
 **You should evaluate files that end with `_bb3.pdb` as the generated pdb, since the O element in `_bb4.pdb` is unstable in our reconstruction function.**
 ## Packages and Scripts for Evaluation
