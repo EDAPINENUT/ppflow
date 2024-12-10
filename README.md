@@ -113,7 +113,7 @@ python codesign_ppflow.py -ckpt {where-the-trained-ckpt-is}
 
 If you want to directly evaluate the peptides, we provide the peptides as `codesign_results.tar.gz` from our [google drive](https://drive.google.com/drive/u/0/folders/1ce5DVmZz0c-p3PKrGDQoU_C9MD3cWLNq), which consists of 20 samples per protein structure for more stable evaluation, with results given as
 
-｜Method| IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
+| Method| IMP%-S(↑) | Validity(↑) | Novelty(↑) | Diversity |
 |----|-----------|-------------|------------|-----------|
 |PPFlow| 4.04%    | 1.00        | 0.99       | 0.67      |
 |DiffPP| 3.72%    | 0.41        | 0.89       | 0.28      |
