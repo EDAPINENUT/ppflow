@@ -9,7 +9,10 @@ from functorch import vmap
 from ..common.so3 import * 
 from ..common.so2 import *
 from ..common.layers import clampped_one_hot
-from torch.func import jvp
+if int(torch.__version__.split('.')[0]) >= 2:
+    from torch.func import jvp
+else:
+    from torch.autograd.functional import jvp
 
 # from geomstats._backend import _backend_config as _config
 ### IMPORTANT!
