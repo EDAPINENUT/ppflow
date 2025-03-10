@@ -9,10 +9,7 @@ from functorch import vmap
 from ..common.so3 import * 
 from ..common.so2 import *
 from ..common.layers import clampped_one_hot
-if int(torch.__version__.split('.')[0]) >= 2:
-    from torch.func import jvp
-else:
-    from torch.autograd.functional import jvp
+from torch.func import jvp
 
 # from geomstats._backend import _backend_config as _config
 ### IMPORTANT!
@@ -50,12 +47,9 @@ class SO3FlowSampler(nn.Module):
     
     def inference(self, xt, vx_t, dt, mask=None):
         dt = dt.reshape(-1, *([1] * (xt.dim() - 1)))
-        x_new = expmap(xt, vx_t * dt)
-        x_new = self.manifold.rotation_vector_from_matrix(x_new)
-        x_new = self.manifold.matrix_from_rotation_vector(x_new)
-        if mask is not None:
-            x_new = torch.where(mask, x_new, xt)
-        return x_new
+        assert torch.abs(vx_t.norm(dim=-1) - 1).max() < 1e-5, "vx_t is not a unit vector"
+        assert torch.abs(vx_t.norm(dim=-2) - 1).max() < 1e-5, "vx_t is not a unit vector"
+        return vx_t
 
 class R3FlowSampler(nn.Module):
     '''

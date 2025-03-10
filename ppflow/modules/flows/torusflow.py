@@ -177,12 +177,8 @@ class TorusFlow(nn.Module):
             up_t = torch.zeros_like(p_t)
             ud_t = torch.zeros_like(d_t)
         
-        # nerf_build_batch_bb4(d_1[...,0], d_1[...,1], d_1[...,2])
-
         X_t = manifold_to_euclid(dr_t, p_t, d_t, X_1, mask_gen_pos, dr=True)
-        
-        # _, R_t_global = global_frame(X_t, mask_gen_pos)
-        
+                
         X_t, R_t = X_t[:, :, BBHeavyAtom.CA], construct_3d_basis(X_t[:, :, BBHeavyAtom.CA],
                                                                  X_t[:, :, BBHeavyAtom.C],
                                                                  X_t[:, :, BBHeavyAtom.N],)
@@ -278,7 +274,7 @@ class TorusFlow(nn.Module):
                                                                      X_t[:, :, BBHeavyAtom.N],)
 
             vp_t, vr_t, vd_t, vc_t = self.eps_net(
-                    d_t, s_t, X_t, R_t, R_t_global, res_feat, pair_feat, t_tensor, 
+                    d_t, s_t, X_t, R_t, res_feat, pair_feat, t_tensor, 
                     mask_gen_d, mask_gen_aa, mask_gen_pos, mask_res
                 )   # (N, L, 3), (N, L, 3, 3), (N, L, 3)
 

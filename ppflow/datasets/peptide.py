@@ -91,8 +91,8 @@ class PairDataset(Dataset):
             
         tasks = []
         for protein_name in protein_names:
-            task = {'receptor_path': self.data_dir + '/{}/receptor.pdb'.format(protein_name), 
-                    'peptide_path': self.data_dir + '/{}/peptide.pdb'.format(protein_name),
+            task = {'receptor_path': self.data_dir + '/{}/receptor_repaired.pdb'.format(protein_name), 
+                    'peptide_path': self.data_dir + '/{}/peptide_repaired.pdb'.format(protein_name),
                     'pdb_name': protein_name}
             tasks.append(task)  
 
