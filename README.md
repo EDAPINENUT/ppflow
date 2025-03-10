@@ -1,6 +1,6 @@
 # PPFlow: Target-Aware Peptide Design with Torsional Flow Matching
 <p align="center">
-    <img src="temp/img.png" width="400" class="center" alt="PPFlow Workflow"/>
+    <img src="temp/img.png" width="800" class="center" alt="PPFlow Workflow"/>
     <br/>
 </p>
 ## Installation
