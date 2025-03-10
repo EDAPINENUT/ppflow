@@ -1,5 +1,8 @@
 # PPFlow: Target-Aware Peptide Design with Torsional Flow Matching
-
+<p align="center">
+    <img src="tmp/img" width="400" class="center" alt="PPFlow Workflow"/>
+    <br/>
+</p>
 ## Installation
 
 #### Create the conda environment and activate it.
